@@ -1,4 +1,4 @@
-# TsRustResult ✨🦀💖
+# ts-rust-result ✨🦀💖
 
 A lightweight, zero-dependency TypeScript library that brings Rust's `Result` type to your JavaScript/TypeScript projects. Handle errors gracefully with type safety and functional programming patterns. 🌸✨
 
