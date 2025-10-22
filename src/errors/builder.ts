@@ -8,8 +8,8 @@
  *   .build()
  */
 
-import type { DomainError } from './types'
-import { captureStack, getCaptureStacks } from './stack'
+import type { DomainError } from './types.js'
+import { captureStack, getCaptureStacks } from './stack.js'
 
 /**
  * Fluent builder interface for constructing domain errors.

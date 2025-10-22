@@ -30,19 +30,19 @@
  */
 
 // Re-export all types
-export * from './types'
+export * from './types.js'
 
 // Re-export builder
-export * from './builder'
+export * from './builder.js'
 
 // Re-export factories
-export * from './factories'
+export * from './factories.js'
 
 // Re-export conversion utilities
-export * from './conversion'
+export * from './conversion.js'
 
 // Re-export stack utilities
-export * from './stack'
+export * from './stack.js'
 
 // Re-export Zod integration
-export * from './zod'
+export * from './zod.js'

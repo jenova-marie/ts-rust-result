@@ -22,10 +22,10 @@
  */
 
 // Re-export logging helpers
-export * from './logging'
+export * from './logging.js'
 
 // Re-export tracing helpers
-export * from './tracing'
+export * from './tracing.js'
 
 // Re-export metrics helpers
-export * from './metrics'
+export * from './metrics.js'

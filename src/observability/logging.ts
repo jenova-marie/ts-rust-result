@@ -3,7 +3,7 @@
  * Integrates with Pino, Winston, Grafana Loki, and other structured loggers.
  */
 
-import type { DomainError } from '../errors/types'
+import type { DomainError } from '../errors/types.js'
 
 /**
  * Maximum depth for error cause chain traversal.

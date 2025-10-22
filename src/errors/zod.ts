@@ -5,10 +5,10 @@
  * Zod is an optional peer dependency - users who want Zod integration must install it separately.
  */
 
-import type { Result } from '../index'
-import { ok, err } from '../index'
-import type { ValidationError } from './types'
-import { error } from './builder'
+import type { Result } from '../index.js'
+import { ok, err } from '../index.js'
+import type { ValidationError } from './types.js'
+import { error } from './builder.js'
 
 /**
  * Type definitions for Zod (to avoid requiring zod as dependency).

@@ -5,11 +5,11 @@
  * - tryResultSafe: Wrap async functions with automatic error conversion
  */
 
-import type { Result } from '../index'
-import { ok, err } from '../index'
-import type { UnexpectedError } from './types'
-import { error } from './builder'
-import { captureStackFromError } from './stack'
+import type { Result } from '../index.js'
+import { ok, err } from '../index.js'
+import type { UnexpectedError } from './types.js'
+import { error } from './builder.js'
+import { captureStackFromError } from './stack.js'
 
 /**
  * Convert an unknown error (from catch block) to UnexpectedError.

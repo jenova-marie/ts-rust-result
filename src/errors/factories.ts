@@ -15,8 +15,8 @@ import type {
   AuthError,
   ConfigError,
   UnexpectedError,
-} from './types'
-import { error } from './builder'
+} from './types.js'
+import { error } from './builder.js'
 
 // ============================================================================
 // File System Error Factories

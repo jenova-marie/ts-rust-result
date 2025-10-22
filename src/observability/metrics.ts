@@ -3,7 +3,7 @@
  * Use with caution - high cardinality labels can cause performance issues.
  */
 
-import type { DomainError } from '../errors/types'
+import type { DomainError } from '../errors/types.js'
 
 /**
  * Convert a DomainError to Prometheus metric labels.

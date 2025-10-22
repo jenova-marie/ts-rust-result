@@ -3,7 +3,7 @@
  * Follows OpenTelemetry semantic conventions for error attributes.
  */
 
-import type { DomainError } from '../errors/types'
+import type { DomainError } from '../errors/types.js'
 
 /**
  * Convert a DomainError to OpenTelemetry span attributes.
