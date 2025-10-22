@@ -47,10 +47,9 @@ jobs:
 
       - name: Test package exports
         run: |
-          node -e "import('./package.json', { assert: { type: 'json' } }).then(pkg => console.log('Testing exports:', Object.keys(pkg.default.exports)))"
-          node -e "import('./dist/index.js').then(() => console.log('✓ Main export works'))"
-          node -e "import('./dist/errors/index.js').then(() => console.log('✓ Errors export works'))"
-          node -e "import('./dist/observability/index.js').then(() => console.log('✓ Observability export works'))"
+          node --input-type=module -e "import('./dist/index.js').then(() => console.log('✓ Main export works'))"
+          node --input-type=module -e "import('./dist/errors/index.js').then(() => console.log('✓ Errors export works'))"
+          node --input-type=module -e "import('./dist/observability/index.js').then(() => console.log('✓ Observability export works'))"
 
   coverage:
     runs-on: ubuntu-latest
