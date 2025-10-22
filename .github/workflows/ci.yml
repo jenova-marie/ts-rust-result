@@ -47,6 +47,8 @@ jobs:
 
       - name: Generate docs
         run: pnpm docs
+        env:
+          BROWSER: none
 
       - name: Test package exports
         run: |
