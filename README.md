@@ -12,46 +12,6 @@ yarn add @jenova-marie/ts-rust-result
 pnpm add @jenova-marie/ts-rust-result
 ```
 
-## What's New in 2.1 🚀
-
-Version 2.1 adds **full generic type support** - the #1 requested feature! No more `as any` casts:
-
-- **✨ Generic Result Type** - `Result<T, E = Error>` with full type inference
-- **🎯 Zero Type Casts** - `err(fileNotFound(path))` just works - fully typed!
-- **🔍 IntelliSense Support** - Access error properties with full autocomplete
-- **🌊 Union Error Types** - `Result<T, FileError | ValidationError>` supported
-- **🔄 100% Backward Compatible** - Existing code continues to work unchanged
-
-### Before (2.0.x):
-```typescript
-function loadConfig(path: string): Result<Config> {
-  if (!exists(path)) {
-    return err(fileNotFound(path) as any)  // ❌ Type cast required
-  }
-  return ok(config)
-}
-```
-
-### After (2.1.0):
-```typescript
-import { type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
-
-function loadConfig(path: string): Result<Config, FileNotFoundError> {
-  if (!exists(path)) {
-    return err(fileNotFound(path))  // ✅ Fully typed!
-  }
-  return ok(config)
-}
-
-// Consumer code gets full type safety
-const result = loadConfig('config.json')
-if (!result.ok) {
-  console.log(result.error.path)  // ✅ TypeScript knows .path exists!
-}
-```
-
-**Migration:** Additive change with default parameters - existing code works unchanged!
-
 ## What's New in 2.2 🌟
 
 Version 2.2 adds **domain-specific helper utilities** based on real-world feedback:
@@ -107,6 +67,46 @@ function processTree(node: Node): ConfigResult<ProcessedNode> {
 ```
 
 **Learn More:** See [content/PATTERNS.md](./content/PATTERNS.md) for comprehensive examples!
+
+## What's New in 2.1 🚀
+
+Version 2.1 adds **full generic type support** - the #1 requested feature! No more `as any` casts:
+
+- **✨ Generic Result Type** - `Result<T, E = Error>` with full type inference
+- **🎯 Zero Type Casts** - `err(fileNotFound(path))` just works - fully typed!
+- **🔍 IntelliSense Support** - Access error properties with full autocomplete
+- **🌊 Union Error Types** - `Result<T, FileError | ValidationError>` supported
+- **🔄 100% Backward Compatible** - Existing code continues to work unchanged
+
+### Before (2.0.x):
+```typescript
+function loadConfig(path: string): Result<Config> {
+  if (!exists(path)) {
+    return err(fileNotFound(path) as any)  // ❌ Type cast required
+  }
+  return ok(config)
+}
+```
+
+### After (2.1.0):
+```typescript
+import { type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
+
+function loadConfig(path: string): Result<Config, FileNotFoundError> {
+  if (!exists(path)) {
+    return err(fileNotFound(path))  // ✅ Fully typed!
+  }
+  return ok(config)
+}
+
+// Consumer code gets full type safety
+const result = loadConfig('config.json')
+if (!result.ok) {
+  console.log(result.error.path)  // ✅ TypeScript knows .path exists!
+}
+```
+
+**Migration:** Additive change with default parameters - existing code works unchanged!
 
 ## What's New in 2.0 🎉
 
