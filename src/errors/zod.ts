@@ -5,8 +5,8 @@
  * Zod is an optional peer dependency - users who want Zod integration must install it separately.
  */
 
-import type { Result } from '../TsRustResult'
-import { ok, err } from '../TsRustResult'
+import type { Result } from '../index'
+import { ok, err } from '../index'
 import type { ValidationError } from './types'
 import { error } from './builder'
 

@@ -14,7 +14,7 @@ import {
     type Result,
     type Ok,
     type Err
-} from '../src/TsRustResult'
+} from '../src/index'
 
 describe('RustResult Core Functions', () => {
     describe('ok', () => {

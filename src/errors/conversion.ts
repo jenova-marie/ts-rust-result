@@ -5,8 +5,8 @@
  * - tryResultSafe: Wrap async functions with automatic error conversion
  */
 
-import type { Result } from '../TsRustResult'
-import { ok, err } from '../TsRustResult'
+import type { Result } from '../index'
+import { ok, err } from '../index'
 import type { UnexpectedError } from './types'
 import { error } from './builder'
 import { captureStackFromError } from './stack'

@@ -6,7 +6,7 @@
 import { describe, it, expect } from 'vitest'
 
 // Test 1: Main package imports
-import { ok, err, isOk, isErr, type Result } from '../src/TsRustResult'
+import { ok, err, isOk, isErr, type Result } from '../src/index'
 
 // Test 2: Error infrastructure imports
 import {
