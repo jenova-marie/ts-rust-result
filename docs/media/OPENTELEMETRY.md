@@ -665,7 +665,6 @@ setCaptureStacks(true)
 ## Related Documentation
 
 - [Error Design Philosophy](./ERROR_DESIGN.md)
-- [Pattern Guide](./PATTERNS.md) - **New in v2.2.0** - Domain-specific helpers for clean error handling
 - [Sentry Integration](./SENTRY.md)
 - [Observability Guide](./README.md#observability)
 

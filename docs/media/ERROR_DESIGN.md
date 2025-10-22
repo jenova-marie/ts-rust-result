@@ -531,67 +531,7 @@ function handleResult<T, E>(result: Result<T, E>): T {
 }
 ```
 
-### Pattern 4: Domain-Specific Wrappers (v2.2.0+)
-
-**Recommended for production applications** - eliminate ALL type assertions with domain helpers:
-
-```typescript
-// Step 1: Define your domain errors
-import { type FileSystemError, type ValidationError } from '@jenova-marie/ts-rust-result/errors'
-
-interface MissingEnvVarError extends DomainError {
-  kind: 'MissingEnvVar'
-  varName: string
-}
-
-type ConfigError = FileSystemError | ValidationError | MissingEnvVarError
-
-// Step 2: Create domain-specific Result wrapper (config-result.ts)
-import { createDomainResult } from '@jenova-marie/ts-rust-result/helpers'
-
-export const { ok, err } = createDomainResult<ConfigError>()
-export type ConfigResult<T> = Result<T, ConfigError>
-
-// Step 3: Use everywhere - completely clean!
-import { ok, err, type ConfigResult } from './config-result.js'
-import { fileNotFound, missingEnvVar } from './config-errors.js'
-
-function loadConfigFile(path: string): ConfigResult<string> {
-  if (!exists(path)) {
-    return err(fileNotFound(path))  // ✅ No generic needed!
-  }
-  return ok(readFile(path))  // ✅ No cast needed!
-}
-
-function getEnvVar(name: string): ConfigResult<string> {
-  const value = process.env[name]
-  if (!value) {
-    return err(missingEnvVar(name))  // ✅ Clean!
-  }
-  return ok(value)
-}
-
-// Recursive functions work seamlessly
-function processConfig(config: any): ConfigResult<Config> {
-  if (config.nested) {
-    const result = processConfig(config.nested)
-    if (!result.ok) return result  // ✅ Type flows through!
-  }
-  return ok(config)
-}
-```
-
-**Benefits:**
-- ✅ Zero type assertions throughout your codebase
-- ✅ Centralized error type management
-- ✅ Clean, readable code
-- ✅ Perfect for large projects with multiple modules
-
-**Learn More:** See [PATTERNS.md](./PATTERNS.md) for comprehensive examples!
-
----
-
-### Pattern 5: Validation with Zod
+### Pattern 4: Validation with Zod
 
 ```typescript
 import { z } from 'zod'
