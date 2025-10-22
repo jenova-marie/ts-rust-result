@@ -12,10 +12,15 @@ yarn add @jenova-marie/ts-rust-result
 pnpm add @jenova-marie/ts-rust-result
 ```
 
+**Supports both ESM and CommonJS!** Works in all Node.js environments:
+- ✅ Modern ESM: `import { ok, err } from '@jenova-marie/ts-rust-result'`
+- ✅ Legacy CJS: `const { ok, err } = require('@jenova-marie/ts-rust-result')`
+
 ## What's New in 2.2 🌟
 
-Version 2.2 adds **domain-specific helper utilities** based on real-world feedback:
+Version 2.2 adds **dual module support** and **domain-specific helper utilities**:
 
+- **📦 Dual Module Support** - Works with both ESM (`import`) and CommonJS (`require`)
 - **🎯 `createDomainResult<E>()`** - Eliminate ALL type assertions in your modules
 - **📚 [Pattern Guide](./content/PATTERNS.md)** - Comprehensive documentation for common patterns
 - **🔧 Clean API** - No more `err<ConfigError>()` or `as Result<T, E>` casts needed
@@ -193,13 +198,14 @@ Instead of error-prone traditional patterns with inconsistent error handling, yo
 
 ## Features ✨
 
-- 🦀 **Rust-style Result types** - `Ok<T>` and `Err` with full TypeScript support
+- 🦀 **Rust-style Result types** - `Ok<T>` and `Err<E>` with full TypeScript support
 - 🛡️ **Type-safe error handling** - No more throwing exceptions everywhere
 - 🔧 **Functional utilities** - `map`, `mapErr`, `unwrap`, and more
 - ⚡ **Async support** - `tryResult` for wrapping async operations
 - 🧪 **Assertion helpers** - `assert`, `assertOr`, `assertNotNil` with Result returns
 - 📦 **Zero dependencies** - Lightweight and tree-shakeable
 - 🎯 **TypeScript-first** - Full type safety and IntelliSense support
+- 🔄 **Dual module support** - Works with both ESM and CommonJS out of the box
 
 ## Benefits 💖
 
@@ -329,11 +335,12 @@ Convert Promise-based error handling to Result patterns for more predictable con
 - **No Dependencies** 📦 - No external libraries to load or parse
 - **TypeScript-only** 🎯 - No runtime type checking overhead
 
-## Browser Support 🌍
+## Environment Support 🌍
 
 - **Modern Browsers** 🌐 - ES2020+ features (Chrome 80+, Firefox 75+, Safari 13.1+)
-- **Node.js** 🟢 - 16.0.0+
+- **Node.js** 🟢 - 18.0.0+ (both ESM and CommonJS)
 - **TypeScript** 🔵 - 4.5+
+- **Module Systems** 📦 - ESM (import) and CommonJS (require)
 
 ## Contributing 🤝
 

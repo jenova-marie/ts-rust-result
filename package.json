@@ -20,33 +20,32 @@
   },
   "homepage": "https://github.com/jenova-marie/ts-rust-result#readme",
   "description": "Opinionated TypeScript error handling with Rust's Result type, domain errors, and observability built-in",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "files": [
     "dist",
     "docs"
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
     },
     "./errors": {
-      "types": "./dist/errors/index.d.ts",
-      "import": "./dist/errors/index.js"
+      "types": "./dist/esm/errors/index.d.ts",
+      "import": "./dist/esm/errors/index.js",
+      "require": "./dist/cjs/errors/index.js"
     },
     "./observability": {
-      "types": "./dist/observability/index.d.ts",
-      "import": "./dist/observability/index.js"
-    },
-    "./helpers": {
-      "types": "./dist/helpers.d.ts",
-      "import": "./dist/helpers.js"
+      "types": "./dist/esm/observability/index.d.ts",
+      "import": "./dist/esm/observability/index.js",
+      "require": "./dist/cjs/observability/index.js"
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "make": "pnpm clean && pnpm run docs && pnpm build && pnpm test && pnpm prepack && npm publish",
     "dev": "tsc --watch",
     "test": "vitest run",
@@ -54,7 +53,7 @@
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
-    "docs": "typedoc --options typedoc.json",
+    "docs": "typedoc --options typedoc.json && echo '✅ Documentation generated in ./docs/'",
     "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run test",
     "prepack": "pnpm run clean && pnpm run build",
     "postpack": "pnpm run clean"
