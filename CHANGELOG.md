@@ -25,6 +25,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing yet
 
+## [2.2.0] - 2025-10-22
+
+### Added - Domain-Specific Helper Utilities
+
+**New `createDomainResult<E>()` Helper**
+- Eliminates ALL type assertions when working with custom error types
+- Returns domain-bound `ok()` and `err()` functions
+- No more `err<ConfigError>()` or `as Result<T, E>` casts needed
+- Clean, ergonomic API for domain-specific Result usage
+
+**Comprehensive Pattern Documentation**
+- New `content/PATTERNS.md` guide covering:
+  - Domain-specific Result wrappers
+  - Union error type patterns
+  - Recursive function patterns
+  - Error composition strategies
+  - Type inference best practices
+
+**Package Exports**
+- Added `/helpers` subpath export: `@jenova-marie/ts-rust-result/helpers`
+- Export `createDomainResult<E>()` function
+- Export `DomainResult<T, E>` type utility
+
+**Real-World Tested**
+- Based on feedback from team-wonder-logger integration
+- Patterns validated in production config loading scenarios
+- Addresses type widening, recursive functions, and error composition
+
+### Examples
+
+Before (2.1.x):
+```typescript
+function loadConfig(path: string): Result<Config, ConfigError> {
+  return err<ConfigError>(fileNotFound(path))  // ❌ Generic needed
+  return ok(config) as Result<Config, ConfigError>  // ❌ Cast needed
+}
+```
+
+After (2.2.0):
+```typescript
+// config-result.ts - create once
+const { ok, err } = createDomainResult<ConfigError>()
+
+// config-loader.ts - use everywhere
+function loadConfig(path: string): ConfigResult<Config> {
+  return err(fileNotFound(path))  // ✅ Clean!
+  return ok(config)  // ✅ Clean!
+}
+```
+
+### Migration
+
+**Fully backward compatible** - existing code continues to work. The new helpers are opt-in.
+
+To adopt the new pattern:
+1. Create domain-specific wrappers with `createDomainResult<YourErrorType>()`
+2. Export the `ok` and `err` functions for your module
+3. Replace `Result<T, YourErrorType>` with `YourResult<T>` type alias
+4. Remove all `err<YourErrorType>()` generics and `as Result<T, E>` casts
+
+See `content/PATTERNS.md` for detailed migration examples.
+
 ## [2.1.0] - 2025-01-22
 
 ### Added - Full Generic Type Support

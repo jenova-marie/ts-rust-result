@@ -52,6 +52,62 @@ if (!result.ok) {
 
 **Migration:** Additive change with default parameters - existing code works unchanged!
 
+## What's New in 2.2 🌟
+
+Version 2.2 adds **domain-specific helper utilities** based on real-world feedback:
+
+- **🎯 `createDomainResult<E>()`** - Eliminate ALL type assertions in your modules
+- **📚 Pattern Guide** - Comprehensive documentation for common patterns
+- **🔧 Clean API** - No more `err<ConfigError>()` or `as Result<T, E>` casts needed
+- **♻️ Reusable** - Create once, use everywhere in your domain
+
+### The Problem (2.1.x):
+```typescript
+import { ok, err, type Result } from '@jenova-marie/ts-rust-result'
+import { fileNotFound, type ConfigError } from './errors.js'
+
+function loadConfig(path: string): Result<Config, ConfigError> {
+  if (!exists(path)) {
+    return err<ConfigError>(fileNotFound(path))  // ❌ Still need generic
+  }
+  return ok(config) as Result<Config, ConfigError>  // ❌ Type assertion
+}
+```
+
+### The Solution (2.2.0):
+```typescript
+// config-result.ts - create once
+import { createDomainResult } from '@jenova-marie/ts-rust-result/helpers'
+import { type ConfigError } from './errors.js'
+
+export const { ok, err } = createDomainResult<ConfigError>()
+export type ConfigResult<T> = Result<T, ConfigError>
+```
+
+```typescript
+// config-loader.ts - use everywhere
+import { ok, err, type ConfigResult } from './config-result.js'
+import { fileNotFound } from './errors.js'
+
+function loadConfig(path: string): ConfigResult<Config> {
+  if (!exists(path)) {
+    return err(fileNotFound(path))  // ✅ Completely clean!
+  }
+  return ok(config)  // ✅ No casts needed!
+}
+
+// Recursive functions work perfectly
+function processTree(node: Node): ConfigResult<ProcessedNode> {
+  for (const child of node.children) {
+    const result = processTree(child)
+    if (!result.ok) return result  // ✅ Type flows through!
+  }
+  return ok(processed)
+}
+```
+
+**Learn More:** See [content/PATTERNS.md](./content/PATTERNS.md) for comprehensive examples!
+
 ## What's New in 2.0 🎉
 
 Version 2.0 transforms ts-rust-result into an **opinionated error handling framework** with:
