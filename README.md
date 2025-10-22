@@ -57,7 +57,7 @@ if (!result.ok) {
 Version 2.2 adds **domain-specific helper utilities** based on real-world feedback:
 
 - **🎯 `createDomainResult<E>()`** - Eliminate ALL type assertions in your modules
-- **📚 Pattern Guide** - Comprehensive documentation for common patterns
+- **📚 [Pattern Guide](./content/PATTERNS.md)** - Comprehensive documentation for common patterns
 - **🔧 Clean API** - No more `err<ConfigError>()` or `as Result<T, E>` casts needed
 - **♻️ Reusable** - Create once, use everywhere in your domain
 
