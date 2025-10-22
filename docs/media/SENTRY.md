@@ -547,9 +547,89 @@ Sentry.init({
 
 ---
 
+### Example 4: Using Domain Helpers (v2.2.0+)
+
+**Recommended** - Clean, type-safe error handling with zero type assertions:
+
+```typescript
+import express from 'express'
+import * as Sentry from '@sentry/node'
+import { createDomainResult } from '@jenova-marie/ts-rust-result/helpers'
+import { toSentryError, fileNotFound, type FileSystemError, type ValidationError } from '@jenova-marie/ts-rust-result/errors'
+
+// Define your domain errors
+interface NotFoundError extends DomainError {
+  kind: 'NotFound'
+  resource: string
+  id: string
+}
+
+type ApiError = FileSystemError | ValidationError | NotFoundError
+
+// Create domain-specific helpers
+const { ok, err } = createDomainResult<ApiError>()
+type ApiResult<T> = Result<T, ApiError>
+
+// Use everywhere - completely clean!
+async function loadUser(id: string): ApiResult<User> {
+  const result = await database.findUser(id)
+
+  if (!result) {
+    return err({  // ✅ No cast needed!
+      kind: 'NotFound',
+      resource: 'User',
+      id,
+      message: `User not found: ${id}`
+    })
+  }
+
+  return ok(result)  // ✅ No cast needed!
+}
+
+// Error handling with full type safety
+app.get('/api/users/:id', async (req, res) => {
+  const result = await loadUser(req.params.id)
+
+  if (!result.ok) {
+    const error = result.error  // ✅ Typed as ApiError
+
+    // Send to Sentry
+    if (error.kind !== 'NotFound') {
+      Sentry.captureException(toSentryError(error), {
+        tags: { error_kind: error.kind },
+        extra: { user_id: req.params.id }
+      })
+    }
+
+    // Pattern matching with full type narrowing
+    switch (error.kind) {
+      case 'NotFound':
+        return res.status(404).json({ error: 'User not found' })
+      case 'FileNotFound':
+        return res.status(500).json({ error: 'Configuration error' })
+      case 'SchemaValidation':
+        return res.status(400).json({ error: 'Invalid data' })
+      default:
+        return res.status(500).json({ error: 'Internal error' })
+    }
+  }
+
+  res.json(result.value)
+})
+```
+
+**Benefits:**
+- ✅ Zero type assertions - completely clean code
+- ✅ Full type safety throughout the request/response cycle
+- ✅ Centralized error type management
+- ✅ Sentry integration with proper error names and context
+
+---
+
 ## Related Documentation
 
 - [Error Design Philosophy](./ERROR_DESIGN.md)
+- [Pattern Guide](./PATTERNS.md) - **New in v2.2.0**
 - [OpenTelemetry Integration](./OPENTELEMETRY.md)
 - [Observability Guide](./README.md#observability)
 
