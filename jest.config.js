@@ -1,5 +1,5 @@
 export default {
-    preset: 'ts-jest',
+    preset: 'ts-jest/presets/default-esm',
     testEnvironment: 'node',
     roots: ['<rootDir>/test'],
     testMatch: ['**/*.test.ts'],
@@ -11,12 +11,16 @@ export default {
     coverageReporters: ['text', 'lcov', 'html'],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1',
+        '^(\\.{1,2}/.*)\\.js$': '$1',
     },
     extensionsToTreatAsEsm: ['.ts'],
     transform: {
         '^.+\\.ts$': ['ts-jest', {
             useESM: true,
+            tsconfig: {
+                module: 'ES2020',
+                moduleResolution: 'node',
+            },
         }],
     },
 }; 
