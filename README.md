@@ -5,12 +5,65 @@ A lightweight, zero-dependency TypeScript library that brings Rust's `Result` ty
 ## Installation 🌈
 
 ```bash
-npm install ts-rust-result
+npm install @jenova-marie/ts-rust-result
 # or
-yarn add ts-rust-result
+yarn add @jenova-marie/ts-rust-result
 # or
-pnpm add ts-rust-result
+pnpm add @jenova-marie/ts-rust-result
 ```
+
+## What's New in 2.0 🎉
+
+Version 2.0 transforms ts-rust-result into an **opinionated error handling framework** with:
+
+- **🏗️ Domain Errors** - 8 standard error categories (FileSystem, Parse, Validation, Network, Database, Auth, Config, Unexpected)
+- **🔨 Builder Pattern** - Fluent API for creating errors: `error('FileNotFound').withContext({...}).build()`
+- **⚡ Factory Shortcuts** - 30+ convenience functions like `fileNotFound()`, `invalidJSON()`, `schemaValidation()`
+- **📊 Observability Built-in** - First-class Sentry, OpenTelemetry, and Prometheus integration
+- **🔍 Smart Stack Traces** - Auto-capture in dev/test, skip in production (NODE_ENV aware)
+- **⛓️ Error Chaining** - Preserve full error context with `.withCause()`
+- **✅ Zod Integration** - `fromZodSafeParse()` for seamless schema validation
+- **📦 Subpath Exports** - Clean imports: `@jenova-marie/ts-rust-result/errors`, `/observability`
+
+**Migration from 1.x:** The core Result API is unchanged! All 1.x code continues to work. The new error infrastructure is **opt-in** through separate imports.
+
+Want the unopinionated 1.x version? It remains available at [@jenova-marie/ts-rust-result@1.3.6](https://www.npmjs.com/package/@jenova-marie/ts-rust-result/v/1.3.6).
+
+### Quick Example
+
+```typescript
+// Core Result (unchanged from 1.x)
+import { ok, err, type Result } from '@jenova-marie/ts-rust-result'
+
+// New: Opinionated error handling
+import { fileNotFound, error } from '@jenova-marie/ts-rust-result/errors'
+import { toLogContext } from '@jenova-marie/ts-rust-result/observability'
+
+function loadConfig(path: string): Result<Config> {
+  if (!exists(path)) {
+    return err(fileNotFound(path) as any)
+  }
+  return ok(parse(readFile(path)))
+}
+
+const result = loadConfig('/app/config.json')
+if (!result.ok) {
+  // Structured logging with one line
+  logger.error(toLogContext(result.error), 'Failed to load config')
+
+  // Send to Sentry
+  Sentry.captureException(toSentryError(result.error))
+
+  // Record metric
+  errorCounter.inc(toMetricLabels(result.error))
+}
+```
+
+**Learn More:**
+- [Error Design Philosophy](./content/ERROR_DESIGN.md)
+- [Sentry Integration](./content/SENTRY.md)
+- [OpenTelemetry Integration](./content/OPENTELEMETRY.md)
+- [Zod Integration](./content/ZOD.md)
 
 ## Why TsRustResult Exists ✨
 
