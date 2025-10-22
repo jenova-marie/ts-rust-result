@@ -3,7 +3,7 @@
  * Tests all three import paths and their interoperability
  */
 
-import { describe, it, expect } from '@jest/globals'
+import { describe, it, expect } from 'vitest'
 
 // Test 1: Main package imports
 import { ok, err, isOk, isErr, type Result } from '../src/TsRustResult'

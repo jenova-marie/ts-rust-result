@@ -45,9 +45,9 @@
     "build": "tsc",
     "make": "pnpm clean && pnpm run docs && pnpm build && pnpm test && pnpm prepack && npm publish",
     "dev": "tsc --watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
     "docs": "typedoc --options typedoc.json",
@@ -56,14 +56,13 @@
     "postpack": "pnpm run clean"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
     "@typescript-eslint/parser": "^8.35.0",
-    "jest": "^30.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "jsdoc": "^4.0.4",
-    "ts-jest": "^29.4.0",
     "typedoc": "^0.28.5",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "zod": "^3.0.0"

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import {
     ok,
     err,
@@ -13,7 +14,7 @@ import {
     type Result,
     type Ok,
     type Err
-} from '../src/TsRustResult';
+} from '../src/TsRustResult'
 
 describe('RustResult Core Functions', () => {
     describe('ok', () => {
