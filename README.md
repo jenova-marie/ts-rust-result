@@ -404,6 +404,46 @@ A: Initially yes, but it prevents bugs and makes your code more maintainable in 
 **Q: Can I mix Results with traditional error handling?** 🔄
 A: Yes! Use `tryResult` to wrap existing async functions and gradually migrate your codebase.
 
+## 📚 Additional Documentation
+
+Comprehensive guides for advanced usage and integrations:
+
+### Core Concepts
+- **[Pattern Guide](./content/PATTERNS.md)** - Common patterns, best practices, and real-world examples
+  - Domain-specific Result wrappers
+  - Union error types
+  - Recursive functions
+  - Error composition
+  - Type inference tips
+
+- **[Error Design Philosophy](./content/ERROR_DESIGN.md)** - Architectural decisions and design patterns
+  - Why plain objects over Error classes
+  - Discriminated unions
+  - Builder pattern vs factory functions
+  - Stack trace strategy
+  - Error chaining
+
+### Integrations
+- **[Sentry Integration](./content/SENTRY.md)** - Error monitoring with Sentry
+  - Setup and configuration
+  - Converting DomainErrors to Sentry errors
+  - Best practices for error reporting
+  - Filtering and context enrichment
+
+- **[OpenTelemetry Integration](./content/OPENTELEMETRY.md)** - Distributed tracing with OpenTelemetry
+  - Span attributes from errors
+  - Trace context propagation
+  - Metrics and observability
+  - Integration with Jaeger/Tempo
+
+- **[Zod Integration](./content/ZOD.md)** - Schema validation with Zod
+  - Converting Zod parse results to Results
+  - Type-safe validation
+  - Error mapping
+  - Best practices
+
+---
+
 ## License 📄
 
 GPL-3.0 License - see the [LICENSE](LICENSE) file for details.
