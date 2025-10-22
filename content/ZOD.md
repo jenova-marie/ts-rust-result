@@ -162,7 +162,7 @@ function loadConfig(path: string): Result<Config, FileSystemError | ValidationEr
   try {
     json = JSON.parse(fileResult.value)
   } catch (e) {
-    return err(invalidJSON(fileResult.value, String(e)) as any)
+    return err(invalidJSON(fileResult.value, String(e))) // ✅ Fully typed in v2.1.0+
   }
 
   // Validate schema
@@ -565,8 +565,8 @@ function validateUser(data: unknown): Result<User, ValidationError> {
           issues: [{ path: ['username'], message: 'This username is taken' }]
         })
         .skipStack()
-        .build() as any
-    )
+        .build()
+    ) // ✅ Fully typed in v2.1.0+
   }
 
   return ok(user)

@@ -36,12 +36,12 @@ Want the unopinionated 1.x version? It remains available at [@jenova-marie/ts-ru
 import { ok, err, type Result } from '@jenova-marie/ts-rust-result'
 
 // New: Opinionated error handling
-import { fileNotFound, error } from '@jenova-marie/ts-rust-result/errors'
+import { fileNotFound, error, type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
 import { toLogContext } from '@jenova-marie/ts-rust-result/observability'
 
-function loadConfig(path: string): Result<Config> {
+function loadConfig(path: string): Result<Config, FileNotFoundError> {
   if (!exists(path)) {
-    return err(fileNotFound(path) as any)
+    return err(fileNotFound(path))
   }
   return ok(parse(readFile(path)))
 }

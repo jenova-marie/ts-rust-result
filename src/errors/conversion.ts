@@ -133,18 +133,18 @@ export function toSentryError(domainError: { kind: string; message: string; stac
  */
 export async function tryResultSafe<T>(
   fn: () => Promise<T>
-): Promise<Result<T> | Result<T>> {
+): Promise<Result<T, UnexpectedError>> {
   try {
     const value = await fn()
 
     // Detect existing Result and unwrap (prevents Result<Result<T>>)
     if (value && typeof value === 'object' && '_isr' in value && (value as any)._isr === true) {
-      return value as unknown as Result<T>
+      return value as unknown as Result<T, UnexpectedError>
     }
 
-    return ok(value)
+    return ok(value) as Result<T, UnexpectedError>
   } catch (e) {
-    return err(fromError(e) as any) // TODO: Fix typing - err expects Error, but we're using DomainError
+    return err(fromError(e)) as Result<T, UnexpectedError>
   }
 }
 
@@ -165,17 +165,17 @@ export async function tryResultSafe<T>(
  *   // result.error.originalError is the JSON parse error
  * }
  */
-export function tryResultSafeSync<T>(fn: () => T): Result<T> {
+export function tryResultSafeSync<T>(fn: () => T): Result<T, UnexpectedError> {
   try {
     const value = fn()
 
     // Detect existing Result and unwrap
     if (value && typeof value === 'object' && '_isr' in value && (value as any)._isr === true) {
-      return value as unknown as Result<T>
+      return value as unknown as Result<T, UnexpectedError>
     }
 
-    return ok(value)
+    return ok(value) as Result<T, UnexpectedError>
   } catch (e) {
-    return err(fromError(e) as any) // TODO: Fix typing
+    return err(fromError(e)) as Result<T, UnexpectedError>
   }
 }

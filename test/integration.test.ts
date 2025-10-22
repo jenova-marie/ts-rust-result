@@ -351,11 +351,11 @@ describe('Integration: Result + DomainError Workflow', () => {
   // Simulate a real-world function using the new error types
   function loadUserConfig(userId: number): Result<{ name: string; email: string }> {
     if (userId < 0) {
-      return err(invalidJSON('user config', 'Invalid user ID') as any)
+      return err(invalidJSON('user config', 'Invalid user ID'))
     }
 
     if (userId === 0) {
-      return err(fileNotFound(`/users/${userId}/config.json`) as any)
+      return err(fileNotFound(`/users/${userId}/config.json`))
     }
 
     return ok({ name: 'Test User', email: 'test@example.com' })

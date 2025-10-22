@@ -25,6 +25,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing yet
 
+## [2.1.0] - 2025-01-22
+
+### Added - Full Generic Type Support
+
+**Generic Result Type**
+- **BREAKING (Minor)**: `Result<T>` → `Result<T, E = Error>` with default Error type for backward compatibility
+- **BREAKING (Minor)**: `Err` → `Err<E = Error>` with generic error type parameter
+- All core functions now support generic error types:
+  - `err<E>(error: E): Result<never, E>` - Fully typed error creation
+  - `isOk<T, E>()`, `isErr<T, E>()` - Type guards preserve error types
+  - `unwrap<T, E>()`, `map<T, U, E>()`, `mapErr<T, E, F>()` - Error types flow through transformations
+  - `tryResult<T, E>()`, `assert<E>()`, `assertOr<E>()`, `assertNotNil<T, E>()` - Generic error support
+
+**Type Safety Improvements**
+- **No more `as any` casts required** when using DomainError types
+- Full IntelliSense support for error properties (kind, context, etc.)
+- Type inference works automatically - `err(fileNotFound(path))` infers `Result<never, FileNotFoundError>`
+- Union error types fully supported: `Result<Config, FileNotFoundError | ValidationError>`
+- Pattern matching with full type narrowing on `result.error.kind`
+
+**Updated Examples**
+- All documentation examples updated to use typed Result pattern
+- Removed `as any` casts from README, JSDoc, and tests
+- Added type annotations to demonstrate best practices
+
+### Changed
+
+**Function Signatures (Backward Compatible)**
+- Default `E = Error` parameter ensures existing code continues to work
+- `Result<T>` still valid (equivalent to `Result<T, Error>`)
+- Only breaking for code that explicitly typed errors (rare edge case)
+
+**Error Conversion Functions**
+- `tryResultSafe<T>()` → `tryResultSafe<T>(): Promise<Result<T, UnexpectedError>>`
+- `tryResultSafeSync<T>()` → `tryResultSafeSync<T>(): Result<T, UnexpectedError>`
+- Removed TODO comments about typing - now fully typed
+
+### Migration Guide
+
+**From 2.0.x to 2.1.0**
+
+Before (2.0.x - required `as any`):
+```typescript
+import { err, type Result } from '@jenova-marie/ts-rust-result'
+import { fileNotFound } from '@jenova-marie/ts-rust-result/errors'
+
+function loadConfig(path: string): Result<Config> {
+  if (!exists(path)) {
+    return err(fileNotFound(path) as any)  // ❌ Type cast required
+  }
+  return ok(config)
+}
+```
+
+After (2.1.0 - fully typed):
+```typescript
+import { err, type Result } from '@jenova-marie/ts-rust-result'
+import { fileNotFound, type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
+
+function loadConfig(path: string): Result<Config, FileNotFoundError> {
+  if (!exists(path)) {
+    return err(fileNotFound(path))  // ✅ Fully typed, no cast needed!
+  }
+  return ok(config)
+}
+
+// Consumer code gets full type safety
+const result = loadConfig('config.json')
+if (!result.ok) {
+  console.log(result.error.kind)    // ✅ TypeScript knows kind exists
+  console.log(result.error.path)    // ✅ TypeScript knows path exists
+  console.log(result.error.context) // ✅ TypeScript knows context exists
+}
+```
+
+**Union Error Types**:
+```typescript
+type ConfigError = FileNotFoundError | ValidationError | ParseError
+
+function loadAndValidateConfig(path: string): Result<Config, ConfigError> {
+  // All three error types work seamlessly
+  if (!exists(path)) return err(fileNotFound(path))
+  if (!valid) return err(schemaValidation(issues))
+  if (!parseable) return err(invalidJSON(content, parseError))
+  return ok(config)
+}
+```
+
+### Notes
+
+- This is a **semver minor** release (additive change with default parameters)
+- Existing code using `Result<T>` continues to work unchanged
+- Recommended to add explicit error types for new code: `Result<T, E>`
+- Full backward compatibility with 2.0.x maintained
+
 ## [2.0.0] - 2025-01-21
 
 ### Added - Opinionated Error Infrastructure

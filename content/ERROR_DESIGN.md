@@ -364,15 +364,15 @@ try {
 
 ts-rust-result leverages TypeScript's type system for **compile-time safety**.
 
-### Result Type Narrowing
+### Result Type Narrowing (v2.1.0+)
 
 ```typescript
 import { ok, err, type Result } from '@jenova-marie/ts-rust-result'
-import { fileNotFound } from '@jenova-marie/ts-rust-result/errors'
+import { fileNotFound, type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
 
-function loadFile(path: string): Result<string> {
+function loadFile(path: string): Result<string, FileNotFoundError> {
   if (!exists(path)) {
-    return err(fileNotFound(path) as any) // Type limitation workaround
+    return err(fileNotFound(path)) // ✅ Fully typed - no cast needed!
   }
   return ok(readFile(path))
 }
@@ -384,25 +384,27 @@ if (result.ok) {
   // TypeScript knows result.value is string
   console.log(result.value.toUpperCase())
 } else {
-  // TypeScript knows result.error exists
+  // TypeScript knows result.error is FileNotFoundError
   console.error(result.error.message)
+  console.log(result.error.path) // ✅ TypeScript knows path exists
 }
 ```
 
-### Generic Error Types
+### Generic Error Types (v2.1.0+)
 
 ```typescript
 import type { FileSystemError, ValidationError } from '@jenova-marie/ts-rust-result/errors'
+import { requiredFieldMissing } from '@jenova-marie/ts-rust-result/errors'
 
-// Specific error type
+// Specific error type - fully typed!
 function validatePath(path: string): Result<string, ValidationError> {
   if (!path) {
-    return err(requiredFieldMissing('path') as any)
+    return err(requiredFieldMissing('path')) // ✅ No cast needed
   }
   return ok(path)
 }
 
-// Union of error types
+// Union of error types - full type safety
 function loadAndValidate(path: string): Result<Data, FileSystemError | ValidationError> {
   const validationResult = validatePath(path)
   if (!validationResult.ok) return validationResult
@@ -432,22 +434,24 @@ const custom = error('MyCustomError')
 
 ## Design Patterns
 
-### Pattern 1: Function Design
+### Pattern 1: Function Design (v2.1.0+)
 
 ```typescript
-// ✅ GOOD: Your functions return Result directly
-function loadConfig(): Result<Config, ConfigError> {
+import { fileNotFound, type FileNotFoundError, type ConfigError } from '@jenova-marie/ts-rust-result/errors'
+
+// ✅ GOOD: Your functions return Result directly with typed errors
+function loadConfig(): Result<Config, FileNotFoundError> {
   const path = '/app/config.json'
   if (!exists(path)) {
-    return err(fileNotFound(path) as any)
+    return err(fileNotFound(path)) // ✅ Fully typed!
   }
   return ok(parse(readFile(path)))
 }
 
 // ✅ GOOD: Wrap third-party calls with tryResultSafe
-import { tryResultSafe } from '@jenova-marie/ts-rust-result/errors'
+import { tryResultSafe, type UnexpectedError } from '@jenova-marie/ts-rust-result/errors'
 
-async function fetchData(): Promise<Result<Data>> {
+async function fetchData(): Promise<Result<Data, UnexpectedError>> {
   return await tryResultSafe(async () => {
     const response = await fetch('https://api.example.com/data')
     return await response.json()
@@ -455,23 +459,24 @@ async function fetchData(): Promise<Result<Data>> {
 }
 
 // ❌ BAD: Don't wrap your own Result-returning functions
-async function loadConfigBad(): Promise<Result<Config>> {
+async function loadConfigBad(): Promise<Result<Config, UnexpectedError>> {
   return await tryResultSafe(async () => {
     return loadConfig() // Returns Result - double wrapping!
   })
 }
 ```
 
-### Pattern 2: Error Composition
+### Pattern 2: Error Composition (v2.1.0+)
 
 ```typescript
-import { error } from '@jenova-marie/ts-rust-result/errors'
+import { error, invalidFieldValue } from '@jenova-marie/ts-rust-result/errors'
+import type { ConfigError, InvalidFieldValueError } from '@jenova-marie/ts-rust-result/errors'
 
 // Compose complex errors from simple ones
 function loadUserConfig(userId: number): Result<Config, ConfigError> {
   // Step 1: Validate input
   if (userId < 0) {
-    return err(invalidFieldValue('userId', userId, 'positive number') as any)
+    return err(invalidFieldValue('userId', userId, 'positive number')) // ✅ Fully typed
   }
 
   // Step 2: Load file
@@ -484,8 +489,8 @@ function loadUserConfig(userId: number): Result<Config, ConfigError> {
         .withMessage(`Failed to load config for user ${userId}`)
         .withContext({ userId, path })
         .withCause(fileResult.error)
-        .build() as any
-    )
+        .build()
+    ) // ✅ Fully typed - no cast needed!
   }
 
   // Step 3: Parse config
@@ -501,12 +506,13 @@ import pino from 'pino'
 
 const logger = pino()
 
-function handleResult<T>(result: Result<T>): T {
+function handleResult<T, E>(result: Result<T, E>): T {
   if (result.ok) {
     return result.value
   }
 
-  const error = result.error as any
+  // error is fully typed as E
+  const error = result.error
 
   // 1. Structured logging
   logger.error(toLogContext(error), 'Operation failed')
@@ -521,7 +527,7 @@ function handleResult<T>(result: Result<T>): T {
   // 4. Error monitoring (if using Sentry)
   Sentry.captureException(toSentryError(error))
 
-  throw new Error(error.message) // or handle gracefully
+  throw new Error((error as any).message) // or handle gracefully
 }
 ```
 

@@ -440,7 +440,7 @@ async function callDownstreamService(data: Data): Promise<Result<Response>> {
       span.setAttributes(toSpanAttributes(error))
       span.setStatus({ code: SpanStatusCode.ERROR })
       span.end()
-      return err(error as any)
+      return err(error) // ✅ Fully typed in v2.1.0+
     }
   })
 }
