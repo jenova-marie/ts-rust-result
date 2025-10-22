@@ -12,6 +12,46 @@ yarn add @jenova-marie/ts-rust-result
 pnpm add @jenova-marie/ts-rust-result
 ```
 
+## What's New in 2.1 🚀
+
+Version 2.1 adds **full generic type support** - the #1 requested feature! No more `as any` casts:
+
+- **✨ Generic Result Type** - `Result<T, E = Error>` with full type inference
+- **🎯 Zero Type Casts** - `err(fileNotFound(path))` just works - fully typed!
+- **🔍 IntelliSense Support** - Access error properties with full autocomplete
+- **🌊 Union Error Types** - `Result<T, FileError | ValidationError>` supported
+- **🔄 100% Backward Compatible** - Existing code continues to work unchanged
+
+### Before (2.0.x):
+```typescript
+function loadConfig(path: string): Result<Config> {
+  if (!exists(path)) {
+    return err(fileNotFound(path) as any)  // ❌ Type cast required
+  }
+  return ok(config)
+}
+```
+
+### After (2.1.0):
+```typescript
+import { type FileNotFoundError } from '@jenova-marie/ts-rust-result/errors'
+
+function loadConfig(path: string): Result<Config, FileNotFoundError> {
+  if (!exists(path)) {
+    return err(fileNotFound(path))  // ✅ Fully typed!
+  }
+  return ok(config)
+}
+
+// Consumer code gets full type safety
+const result = loadConfig('config.json')
+if (!result.ok) {
+  console.log(result.error.path)  // ✅ TypeScript knows .path exists!
+}
+```
+
+**Migration:** Additive change with default parameters - existing code works unchanged!
+
 ## What's New in 2.0 🎉
 
 Version 2.0 transforms ts-rust-result into an **opinionated error handling framework** with:
@@ -134,9 +174,10 @@ Import the library and start using Rust-style Result types for type-safe error h
 ### Core Types 💎
 
 ```typescript
+// v2.1.0+ with generic error types
 type Ok<T> = { ok: true; value: T };
-type Err = { ok: false; error: Error };
-type Result<T> = Ok<T> | Err;
+type Err<E = Error> = { ok: false; error: E };
+type Result<T, E = Error> = Ok<T> | Err<E>;
 ```
 
 ### Core Functions ✨
@@ -144,40 +185,40 @@ type Result<T> = Ok<T> | Err;
 #### `ok<T>(value: T): Result<T>` 🌸
 Creates a successful result.
 
-#### `err(error: Error): Result<never>` 💔
-Creates an error result.
+#### `err<E>(error: E): Result<never, E>` 💔
+Creates an error result. **v2.1.0+**: Fully typed - no casts needed!
 
-#### `isOk<T>(result: Result<T>): result is Ok<T>` ✅
+#### `isOk<T, E>(result: Result<T, E>): result is Ok<T>` ✅
 Type guard to check if a result is successful.
 
-#### `isErr<T>(result: Result<T>): result is Err` ❌
+#### `isErr<T, E>(result: Result<T, E>): result is Err<E>` ❌
 Type guard to check if a result is an error.
 
 ### Utility Functions 🔧
 
-#### `unwrap<T>(result: Result<T>): T` 🎁
+#### `unwrap<T, E>(result: Result<T, E>): T` 🎁
 Unwraps a result, throwing the error if it's an error.
 
-#### `map<T, U>(result: Result<T>, fn: (value: T) => U): Result<U>` 🗺️
+#### `map<T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<U, E>` 🗺️
 Maps a successful result value using the provided function.
 
-#### `mapErr<T>(result: Result<T>, fn: (err: Error) => Error): Result<T>` 🔄
+#### `mapErr<T, E, F>(result: Result<T, E>, fn: (err: E) => F): Result<T, F>` 🔄
 Maps an error result using the provided function.
 
 ### Async Support ⚡
 
-#### `tryResult<T>(fn: () => Promise<T>, shouldThrow?: boolean): Promise<Result<T>>` 🌊
+#### `tryResult<T, E>(fn: () => Promise<T>, shouldThrow?: boolean): Promise<Result<T, E>>` 🌊
 Wraps an async function in a try-catch block and returns a Result.
 
 ### Assertion Helpers 🧪
 
-#### `assert(condition: boolean, error?: Error, shouldThrow?: boolean): Result<true>` ✅
+#### `assert<E>(condition: boolean, error?: E, shouldThrow?: boolean): Result<true, E>` ✅
 Rust-style assertion that returns a Result instead of throwing.
 
-#### `assertOr<T extends Error>(condition: boolean, error: T, shouldThrow?: boolean): Result<true>` 🎯
+#### `assertOr<E>(condition: boolean, error: E, shouldThrow?: boolean): Result<true, E>` 🎯
 Rust-style assertion with a typed error parameter.
 
-#### `assertNotNil<T>(value: T | null | undefined, message?: string, shouldThrow?: boolean): Result<NonNullable<T>>` 💎
+#### `assertNotNil<T, E>(value: T | null | undefined, message?: string, shouldThrow?: boolean): Result<NonNullable<T>, E>` 💎
 Asserts that a value is not null or undefined, returning the value if valid.
 
 ## Usage Pattern 🎪
