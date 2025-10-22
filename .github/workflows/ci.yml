@@ -45,11 +45,6 @@ jobs:
       - name: Build package
         run: pnpm build
 
-      - name: Generate docs
-        run: pnpm docs
-        env:
-          BROWSER: none
-
       - name: Test package exports
         run: |
           node -e "const pkg = require('./package.json'); console.log('Testing exports:', Object.keys(pkg.exports))"
