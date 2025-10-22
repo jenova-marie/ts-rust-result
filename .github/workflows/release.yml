@@ -1,0 +1,105 @@
+name: Release and Publish
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers on version tags like v1.0.0, v2.0.0, etc.
+
+permissions:
+  contents: write # Required for creating releases
+  id-token: write # Required for npm provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for changelog generation
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.11.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Generate docs
+        run: pnpm docs
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Verify package version matches tag
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION=${{ steps.version.outputs.VERSION }}
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Error: package.json version ($PACKAGE_VERSION) does not match tag version ($TAG_VERSION)"
+            exit 1
+          fi
+          echo "✓ Version check passed: $PACKAGE_VERSION"
+
+      - name: Publish to npm
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.version.outputs.VERSION }}
+          body: |
+            ## @jenova-marie/ts-rust-result v${{ steps.version.outputs.VERSION }}
+
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+
+            ### Installation
+
+            ```bash
+            npm install @jenova-marie/ts-rust-result@${{ steps.version.outputs.VERSION }}
+            # or
+            pnpm add @jenova-marie/ts-rust-result@${{ steps.version.outputs.VERSION }}
+            ```
+
+            ### Package Links
+            - 📦 [npm package](https://www.npmjs.com/package/@jenova-marie/ts-rust-result/v/${{ steps.version.outputs.VERSION }})
+            - 📚 [Documentation](https://github.com/${{ github.repository }})
+
+            ---
+
+            🤖 Generated with [GitHub Actions](https://github.com/features/actions)
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, '-') }}
+
+      - name: Publish summary
+        run: |
+          echo "### 🚀 Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Package**: @jenova-marie/ts-rust-result@${{ steps.version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag**: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Published to npm" >> $GITHUB_STEP_SUMMARY
+          echo "✅ GitHub release created" >> $GITHUB_STEP_SUMMARY
