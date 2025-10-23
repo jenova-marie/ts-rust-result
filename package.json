@@ -1,6 +1,6 @@
 {
   "name": "@jenova-marie/ts-rust-result",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "author": "Jenova Marie",
   "license": "GPL-3.0",
   "packageManager": "pnpm@10.11.0",
