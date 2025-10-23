@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jenova-marie/ts-rust-result.git"
+    "url": "git+https://github.com/jenova-marie/ts-rust-result.git"
   },
   "bugs": {
     "url": "https://github.com/jenova-marie/ts-rust-result/issues"
@@ -72,17 +72,18 @@
   },
   "scripts": {
     "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
-    "make": "pnpm clean && pnpm docs && pnpm build && pnpm test && pnpm prepack && npm publish",
+    "make": "pnpm clean && pnpm docs && pnpm build && pnpm test && npm publish",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
+    "clean:all": "rm -rf dist docs",
     "docs": "typedoc --options typedoc.json && echo '✅ Documentation generated in ./docs/'",
     "postinstall": "node scripts/postinstall.js",
-    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run test",
-    "prepack": "pnpm run clean && pnpm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run docs && pnpm run build && pnpm run test",
+    "prepack": "pnpm run clean && pnpm run docs && pnpm run build",
     "postpack": "pnpm run clean"
   },
   "devDependencies": {
