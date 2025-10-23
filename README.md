@@ -411,9 +411,11 @@ A: Initially yes, but it prevents bugs and makes your code more maintainable in 
 **Q: Can I mix Results with traditional error handling?** 🔄
 A: Yes! Use `tryResult` to wrap existing async functions and gradually migrate your codebase.
 
-## 📚 Additional Documentation
+## 📚 Complete Documentation
 
-Comprehensive guides for advanced usage and integrations:
+**→ [📖 DOCUMENTATION.md](./DOCUMENTATION.md) - Complete documentation index and learning path**
+
+All documentation is included in this npm package for offline access! See [DOCUMENTATION.md](./DOCUMENTATION.md) for a complete guide to all available resources.
 
 ### Core Concepts
 - **[Pattern Guide](./content/PATTERNS.md)** - Common patterns, best practices, and real-world examples

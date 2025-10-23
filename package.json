@@ -24,8 +24,30 @@
   "types": "dist/esm/index.d.ts",
   "files": [
     "dist",
-    "docs"
+    "docs",
+    "content",
+    "scripts",
+    "README.md",
+    "CHANGELOG.md",
+    "DOCUMENTATION.md",
+    "LICENSE"
   ],
+  "directories": {
+    "doc": "docs",
+    "lib": "dist"
+  },
+  "documentation": {
+    "quick-start": "./README.md",
+    "api-reference": "./docs/index.html",
+    "guides": "./content/",
+    "changelog": "./CHANGELOG.md",
+    "index": "./DOCUMENTATION.md",
+    "patterns": "./content/PATTERNS.md",
+    "error-design": "./content/ERROR_DESIGN.md",
+    "opentelemetry": "./content/OPENTELEMETRY.md",
+    "sentry": "./content/SENTRY.md",
+    "zod": "./content/ZOD.md"
+  },
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
@@ -58,6 +80,7 @@
     "lint": "eslint src --ext .ts",
     "clean": "rm -rf dist",
     "docs": "typedoc --options typedoc.json && echo '✅ Documentation generated in ./docs/'",
+    "postinstall": "node scripts/postinstall.js",
     "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run test",
     "prepack": "pnpm run clean && pnpm run build",
     "postpack": "pnpm run clean"
