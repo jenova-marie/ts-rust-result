@@ -8,7 +8,7 @@
  * @since 2.2.0
  */
 
-import { ok as baseOk, err as baseErr, type Result } from './index.js'
+import { ok as baseOk, err as baseErr, type Result } from "./index.js";
 
 /**
  * Creates domain-specific `ok()` and `err()` functions bound to a custom error type.
@@ -79,8 +79,8 @@ export function createDomainResult<E>() {
      * Use with ReturnType to create type aliases.
      * @template T - The success value type
      */
-    Result: {} as <T>() => Result<T, E>
-  }
+    Result: {} as <T>() => Result<T, E>,
+  };
 }
 
 /**
@@ -101,4 +101,4 @@ export function createDomainResult<E>() {
  * }
  * ```
  */
-export type DomainResult<T, E> = Result<T, E>
+export type DomainResult<T, E> = Result<T, E>;
