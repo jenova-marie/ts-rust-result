@@ -74,6 +74,7 @@
     "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "make": "pnpm run docs && pnpm run build && pnpm run test && npm publish",
     "pack": "pnpm run clean && pnpm run docs && pnpm run build && pnpm run test && npm pack && echo '\n✅ Package created! Install locally with:\n   pnpm add ./jenova-marie-ts-rust-result-*.tgz'",
+    "pack:stable": "rm -f ts-rust-result.tgz jenova-marie-ts-rust-result-*.tgz && npm pack && mv jenova-marie-ts-rust-result-*.tgz ts-rust-result.tgz && echo '\n✅ Version-agnostic tarball created: ts-rust-result.tgz\n   Install with: pnpm add file:../ts-rust-result/ts-rust-result.tgz'",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -33,15 +33,26 @@ pnpm docs               # Generate TypeDoc documentation
 
 **Local Package Build (for local consumption):**
 ```bash
+# Option 1: Versioned tarball (includes full test suite)
 pnpm pack               # Build release-ready package locally (.tgz)
                         # Pipeline: clean → docs → build → test → pack
                         # Creates: jenova-marie-ts-rust-result-X.Y.Z.tgz
+
+# Option 2: Stable filename (no tests, faster for quick iterations)
+pnpm pack:stable        # Creates version-agnostic tarball
+                        # Creates: ts-rust-result.tgz (overwrites previous)
+                        # Uses prepack hook: docs → build
 ```
 
 Install the local package in another project:
 ```bash
 cd ../other-project
-pnpm add ../ts-rust-result/jenova-marie-ts-rust-result-*.tgz
+
+# Option 1: Versioned tarball (update version number each time)
+pnpm add ../ts-rust-result/jenova-marie-ts-rust-result-2.2.11.tgz
+
+# Option 2: Stable filename (same command every time - recommended!)
+pnpm add file:../ts-rust-result/ts-rust-result.tgz
 ```
 
 **NPM Publish (via GitHub Actions):**
@@ -53,6 +64,18 @@ pnpm make               # Complete build pipeline + publish to npm
 Note: Publishing to npm happens via GitHub Actions. Use `pnpm pack` for local development and testing.
 
 The `prepublishOnly` hook automatically runs `docs`, `build`, and `test` before publishing.
+
+### Generated Files
+
+The following directories are **excluded from git** (but included in npm packages):
+- `dist/` - Compiled TypeScript output (ESM + CJS)
+- `docs/` - TypeDoc generated documentation
+- `*.tgz` - npm package tarballs
+
+These are regenerated during the build process:
+- `prepack` hook generates `docs/` and `dist/` before creating tarballs
+- `prepublishOnly` hook ensures everything is fresh before npm publish
+- Keeps git history clean and repo size small
 
 ## Architecture & Core Concepts
 
