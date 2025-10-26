@@ -25,6 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Nothing yet
 
+## [2.2.10] - 2025-10-25
+
+### Fixed
+- **tsx compatibility**: Added `"type": "module"` to package.json to fix ESM module resolution in tsx and eliminate Node.js ESM warnings
+- Package now works correctly with tsx without requiring pre-compilation
+
+### Added
+- tsx compatibility test suite to prevent future regressions
+- Smoke test script for manual tsx verification
+- tsx as dev dependency for testing
+
 ## [2.2.0] - 2025-10-22
 
 ### Added - Domain-Specific Helper Utilities

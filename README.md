@@ -15,6 +15,7 @@ pnpm add @jenova-marie/ts-rust-result
 **Supports both ESM and CommonJS!** Works in all Node.js environments:
 - ✅ Modern ESM: `import { ok, err } from '@jenova-marie/ts-rust-result'`
 - ✅ Legacy CJS: `const { ok, err } = require('@jenova-marie/ts-rust-result')`
+- ✅ TypeScript execution: Works with `tsx`, `ts-node`, and other TS runners
 
 ## What's New in 2.2 🌟
 
