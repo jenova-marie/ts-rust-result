@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **tsx compatibility**: Added `"type": "module"` to package.json to fix ESM module resolution in tsx and eliminate Node.js ESM warnings
+- **postinstall script**: Renamed `scripts/postinstall.js` to `scripts/postinstall.cjs` to fix CommonJS compatibility when `"type": "module"` is set
 - Package now works correctly with tsx without requiring pre-compilation
 
 ### Added

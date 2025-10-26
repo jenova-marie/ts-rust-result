@@ -17,9 +17,10 @@ pnpm clean              # Remove dist/ directory
 
 ### Testing
 ```bash
-pnpm test               # Run all tests with Jest
+pnpm test               # Run all tests with Vitest
 pnpm test:watch         # Run tests in watch mode
 pnpm test:coverage      # Generate coverage report
+pnpm test:tsx           # Test tsx compatibility (smoke test)
 ```
 
 ### Quality & Documentation
@@ -29,11 +30,29 @@ pnpm docs               # Generate TypeDoc documentation
 ```
 
 ### Publishing Workflow
+
+**Local Package Build (for local consumption):**
 ```bash
-pnpm make               # Complete build pipeline: clean → docs → build → test → prepack → publish
+pnpm pack               # Build release-ready package locally (.tgz)
+                        # Pipeline: clean → docs → build → test → pack
+                        # Creates: jenova-marie-ts-rust-result-X.Y.Z.tgz
 ```
 
-The `prepublishOnly` hook automatically runs `clean`, `build`, and `test` before publishing.
+Install the local package in another project:
+```bash
+cd ../other-project
+pnpm add ../ts-rust-result/jenova-marie-ts-rust-result-*.tgz
+```
+
+**NPM Publish (via GitHub Actions):**
+```bash
+pnpm make               # Complete build pipeline + publish to npm
+                        # Pipeline: docs → build → test → npm publish
+```
+
+Note: Publishing to npm happens via GitHub Actions. Use `pnpm pack` for local development and testing.
+
+The `prepublishOnly` hook automatically runs `docs`, `build`, and `test` before publishing.
 
 ## Architecture & Core Concepts
 

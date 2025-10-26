@@ -73,6 +73,7 @@
   "scripts": {
     "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "make": "pnpm run docs && pnpm run build && pnpm run test && npm publish",
+    "pack": "pnpm run clean && pnpm run docs && pnpm run build && pnpm run test && npm pack && echo '\n✅ Package created! Install locally with:\n   pnpm add ./jenova-marie-ts-rust-result-*.tgz'",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -83,7 +84,7 @@
     "clean:all": "rm -rf dist docs",
     "docs": "typedoc --options typedoc.json && echo '✅ Documentation generated in ./docs/'",
     "docs:check": "pnpm run docs && git diff --exit-code docs/ || (echo '\n❌ Documentation is out of date! Run: pnpm docs' && exit 1)",
-    "postinstall": "node scripts/postinstall.js",
+    "postinstall": "node scripts/postinstall.cjs",
     "prepublishOnly": "pnpm run docs && pnpm run build && pnpm run test",
     "prepack": "pnpm run docs && pnpm run build"
   },
