@@ -28,6 +28,7 @@
     "content",
     "scripts",
     "README.md",
+    "API.md",
     "CHANGELOG.md",
     "DOCUMENTATION.md",
     "LICENSE"
@@ -37,8 +38,10 @@
     "lib": "dist"
   },
   "documentation": {
-    "quick-start": "./README.md",
+    "quick-start": "./API.md",
+    "api-overview": "./API.md",
     "api-reference": "./docs/index.html",
+    "readme": "./README.md",
     "guides": "./content/",
     "changelog": "./CHANGELOG.md",
     "index": "./DOCUMENTATION.md",
