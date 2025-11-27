@@ -3,7 +3,7 @@ name: Release and Publish
 on:
   push:
     tags:
-      - 'v*' # Triggers on version tags like v1.0.0, v2.0.0, etc.
+      - "v*" # Triggers on version tags like v1.0.0, v2.0.0, etc.
 
 permissions:
   contents: write # Required for creating releases
@@ -27,9 +27,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create .npmrc in project directory
+        run: |
+          cat > .npmrc << 'EOF'
+          strict-ssl=false
+          //git.rso/api/packages/trex/npm/:_authToken=${{ secrets.FORGEJO_AUTH_TOKEN }}
+          //git.rso/api/packages/jenova-marie/npm/:_authToken=${{ secrets.FORGEJO_AUTH_TOKEN }}
+          //git.rso/api/packages/recoverysky-org/npm/:_authToken=${{ secrets.FORGEJO_AUTH_TOKEN }}
+          @dt70s:registry=https://git.rso/api/packages/dt70s/npm/
+          @recoverysky-org:registry=https://git.rso/api/packages/recoverysky-org/npm/
+          @jenova-marie:registry=https://git.rso/api/packages/jenova-marie/npm/
+          @trex-ts:registry=https://git.rso/api/packages/trex/npm/
+          EOF
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -57,7 +70,7 @@ jobs:
       - name: Publish to npm
         run: pnpm publish --no-git-checks --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.FORGEJO_AUTH_TOKEN }}
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
